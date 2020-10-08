@@ -1,21 +1,22 @@
-// todo - make top part parallel
+depth=10;
+fn=30;
 
-d = 10;
-width = 10; // shrink before final print
+module point(x,z,y=0) {
+    translate([x,y+depth/2,z])
+    rotate([90,0,0]) cylinder(r=1,h=depth,center=true);
+//    cube([1,depth,1], center=true);
+}
 
-cp = [10,-10];
-ll = [0,0];
-ul = ll + [0,41];
-ur = ul + [47 * cos(d), 47*sin(d)];
-lr = ur + [-6, -70];
+module pairwise_hulls() {
+    for (i=[0:$children-2]) {
+        hull() children([i:i+1]);
+    }
+}
 
-
-linear_extrude(height=10)
-polygon(points=[
-    cp + [-width*sqrt(2)/2,-width*sqrt(2)/2],
-    ll + [-width,-width/2],
-    ul + [-width,+10],
-    ur + [+width,+10],
-    lr + [+width,     0],
-    lr,ur,ul,ll,cp],
-  convexity=4);
+pairwise_hulls() {
+point(12,-67);
+point(0,0);
+point(43,0);
+point(48,-35);
+point(42,-60);
+}
