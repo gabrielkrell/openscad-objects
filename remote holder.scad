@@ -3,7 +3,15 @@ $fn=120;
 module arrange(r_,w,h) {
     hull() {
         translate([r_  ,0,  r_]) rotate([90]) children();
-        translate([w-r_,0,  r_]) rotate([90])  
+        translate([w-r_,0,  r_]) rotate([90]) children();
+        translate([r_  ,0,  h-r_]) rotate([90]) children();
+        translate([w-r_,0,  h-r_]) rotate([90]) children();
+    }
+}
+
+module rounded_rect(r_,w,h,d) {
+    arrange(r_,w,h) cylinder(r=r_,h=d);
+}
 
 module remote() {
     // front bit
@@ -26,8 +34,8 @@ module remote() {
     }
 
     //keypad
-    translate([(47-35)/2,-0,23]) // keypad
-        rounded_rect(r_=5,w=35,d=30,h=210-23-7); // d=2.5
+    translate([(47-35)/2,-0,23])
+        rounded_rect(r_=5,w=35,d=30,h=210-23-7); // d=2.5 actual size
 }
 
 module bracket() {
