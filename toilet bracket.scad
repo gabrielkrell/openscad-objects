@@ -1,4 +1,4 @@
-depth=10;
+depth=30;
 fn=160;
 
 module point(x,z,y=0,r=1,d=depth) {
@@ -16,20 +16,25 @@ module pairwise_hulls() {
 
 //projection() rotate([-90,0,0])
 module rim() {
-    color("#f2f7f7") hull()
-    pairwise_hulls() {
-        point(12,-67,d=100);
-        point(4,-4,r=5,d=100);
-        point(42,-4,r=5,d=100);
-        point(50,-35,d=100);
-        point(43,-60,d=100);
-    }
-    intersection() {
-        difference() {
-            color("blue",alpha=.2) c();
-            color("red",alpha=.2) translate([5,0,0]) c();
+    color("#f2f7f7") union() {
+        hull()
+        pairwise_hulls() {
+            point(12+3,-67,d=100);
+            point(4,-4,r=5,d=100);
+            point(42,-4,r=5,d=100);
+            point(50,-35,d=100);
+            point(43,-60,d=100);
         }
-        color("black", alpha=.2) translate([-5,0,-60]) cube([35,10,55]);
+        intersection() {
+            difference() {
+    //            color("blue",alpha=.5)
+                c();
+    //            color("red",alpha=.2)
+                translate([5,0,0]) c(.1);
+            }
+    //        color("black", alpha=.2)
+            translate([-5,-50,-60]) cube([35,100,55.7]);
+        }
     }
 }
 
@@ -47,15 +52,15 @@ module spacer() {
     }
 }
 
-projection() rotate([-90,0,0])
+//projection() rotate([-90,0,0])
 difference() {
     spacer();
     rim();
 }
 
-module c() {
-    r=300;
-    translate([r-4,0,r/10])
+module c(w=0) {
+    r=240; // change r to adjust how far the "tail end" flies out.
+    translate([r-2.2/200*r,-50-w/2,r/10])
     rotate([-90,0,0])
-    cylinder(r=r,h=depth,$fn=300);
+    cylinder(r=r,h=100+w,$fn=300);
 }
