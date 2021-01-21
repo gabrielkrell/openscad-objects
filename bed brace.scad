@@ -6,7 +6,7 @@ wall_thickness=4;// how wide walls of brace around wood are
 hole_dia=3.5;      // diameter of screw holes
 
 fillet_r=1.5;    // radius of curve on corners
-fn=60;           // cylinder smoothness
+$fn=60;           // cylinder smoothness
 
 module bump(d=-0.01) { translate([0,0,d]) children(); }
 
@@ -22,7 +22,7 @@ module quad_cylinders(leg_width_, fillet_r_,brace_height_) {
 
 module leg_cylinders(leg_width_, fillet_r_,brace_height) {
     quad_cylinders(leg_width_, fillet_r_,brace_height)
-    cylinder(r=fillet_r, h=brace_height, $fn=fn);
+    cylinder(r=fillet_r, h=brace_height);
 }
 
 module wood() {
@@ -53,8 +53,8 @@ module brace() {
 
 module platforms() {
     translate([0,56,0]) rotate(90) platform();
-    translate([56/2,0,-14]) platform();
-    translate([-56/2,0,-14]) rotate(180) platform();
+    translate([56*.75,0,-14]) platform();
+    translate([-56*.75,0,-14]) rotate(180) platform();
 }
 module platform() {
     difference(){hull() leg_cylinders(leg_width+wall_thickness, fillet_r, flange_height);
@@ -65,8 +65,7 @@ module platform_hole() {
     translate([(leg_width+wall_thickness)/4,0,0])
         cylinder(
             d=hole_dia,
-            h=flange_height+.01,
-            $fn=fn);
+            h=flange_height+.01);
     translate([(leg_width+wall_thickness)/4,0,flange_height])
         cylinder(
             d=9,
@@ -78,6 +77,12 @@ module platform_holes() {
     translate([56/2,0,-14]) platform_hole();
     translate([-56/2,0,-14]) rotate(180) platform_hole();
 }
+
+module hash() {
+translate([5,leg_width/2 + wall_thickness+5,brace_height-5])
+    rotate([-33.5,0,0])
+    rotate(90) linear_extrude(height=2) text(version, size=7);
+}
         
     
 
@@ -87,6 +92,7 @@ color("white") difference() {
         wood();
         bump() slat();
         platform_holes();
+        hash();
     }
 }
 
@@ -147,12 +153,10 @@ module bottom_hole(d=9,fn=6,h=2) {
     translate([(leg_width+wall_thickness)/4,0,0])
         cylinder(
             d=d,
-            h=h,
-            $fn=fn);
+            h=h);
 }
 module bottom_holes(d=9,fn=6,h=2) {
     translate([0,56,0-14]) rotate(90) bottom_hole(d,fn,h);
     translate([56/2,0,-14-14]) bottom_hole(d,fn,h);
     translate([-56/2,0,-14-14]) rotate(180) bottom_hole(d,fn,h);
 }
-
