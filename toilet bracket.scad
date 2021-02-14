@@ -1,7 +1,7 @@
 $fn=160;
 
 x=48.8;
-y=15;
+y=20;
 r=298.68;
 z=5;
 
@@ -15,8 +15,8 @@ module cutout() {
 
 
 difference() {
-    translate([-57/2,-30/2,0]) cube([57,30,14.97]);
-    translate([0,0,10]) cutout();
+    translate([-57/2,-30/2,0]) cube([57,30,19.97]);
+    translate([0,0,15]) cutout();
     label();
 }
 
