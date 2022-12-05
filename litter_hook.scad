@@ -16,10 +16,10 @@ module hook() {
     rotate([90,0,0])
     translate([-offset,0,0]) rotate_extrude(angle=10, $fn=300)
     translate([offset,0]) polygon([
-        [0,    0.5   ],
-        [0,    9.5  ],
-        [19.5, 10 ],
-        [19.5, 0 ]
+        [1,    1.5   ],
+        [1,    8.5  ],
+        [18.5, 9 ],
+        [18.5, 1 ]
     ]);
 }
 
