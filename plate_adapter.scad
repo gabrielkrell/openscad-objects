@@ -1,3 +1,5 @@
+// I have no idea what this was for. Update if found?
+
 $fn=180;
 hole_d=7.15;
 
@@ -16,8 +18,8 @@ module holes() {
 
 difference() {
     hull() {
-        cylinder(d=hole_d*2, h=3);
-        translate([hole_dist+hole_d/2,0]) cylinder(d=hole_d*2, h=3);
+        cylinder(d=hole_d*2, h=4.5);
+        translate([hole_dist+hole_d/2,0]) cylinder(d=hole_d*2, h=4.5);
     }
     translate([0,0,-1]) linear_extrude(5) holes();
 }
@@ -25,8 +27,11 @@ difference() {
 
 
 module plate() {
-    square([40,22]);
+    square([40,32]);
 }
 
 
+
+
+translate([(hole_d+hole_dist)/2-20,hole_d-0.02,0]) linear_extrude(4.5) square([40,3]);
 translate([(hole_d+hole_dist)/2-20,hole_d-0.02,0]) linear_extrude(3) plate();
