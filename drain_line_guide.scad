@@ -1,7 +1,9 @@
 $fn=120;
 
 module cross_section() {
-    translate([57,0,0]) difference() {
+//    translate([57,0,0])
+    translate([(98/2+28/2),0,0])
+    difference() {
             circle(d=28);
             circle(d=24);
             square([20,20]);
