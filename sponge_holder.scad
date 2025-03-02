@@ -30,11 +30,19 @@ module shelf(r=3) {
     }
 }
 
+module screw_hole() {
+    translate([0,-3.01,0]) rotate([90,0,180]) cylinder(d1=3.3, d2=7, h=3.1);
+}
+
 module base() {
     translate([0,0,28]) shelf_support();
     translate([0,0,56]) shelf_support();
     translate([0,0,84]) shelf_support(false);
-    translate([0,-3,-3]) cube([120,3,84+3]);
+    difference() {
+        translate([0,-3,-3]) cube([120,3,84+3]);
+        translate([20,0,40]) screw_hole();
+        translate([100,0,40]) screw_hole();
+    }
     translate([-3,-3,-3]) cube([3,90*.4,84+3]);
     translate([120,-3,-3]) cube([3,90*.4,84+3]);
     difference() {
