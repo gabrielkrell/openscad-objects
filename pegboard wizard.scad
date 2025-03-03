@@ -22,10 +22,10 @@
 $fn = 160;
 
 // width of the orifice
-holder_x_size = 23;
+holder_x_size = 1;
 
 // depth of the orifice
-holder_y_size = 13;
+holder_y_size = 10;
 
 // hight of the holder
 holder_height = 15;
@@ -42,7 +42,7 @@ holder_x_spacing = (34-7);
 holder_y_count = 1;
 
 // orifice corner radius (roundness). Needs to be less than min(x,y)/2.
-corner_radius = (23-17)/2/2;
+corner_radius = 0;//(23-17)/2/2;
 
 // Use values less than 1.0 to make the bottom of the holder narrow
 x_taper_ratio = 1; // taper ratio for the width
@@ -125,7 +125,7 @@ module round_rect_ex(x1, y1, x2, y2, z, r1, r2) {
     }
 }
 
-module pin(clip) {
+module pin(clip, board_thickness=board_thickness) {
     full_hole_size = hole_size;
     hole_size = hole_size*peg_undersize_ratio;
     curve_size = hole_size * .95;
@@ -176,17 +176,20 @@ module pinboard_clips() {
                 translate([
                     j*hole_spacing, 
                     -hole_spacing*(round(holder_total_x/hole_spacing)/2) + i*hole_spacing, 
-                    -board_thickness/2])
-                
-            rotate([0,0,0*15])
-            squished_cylinder(d1=hole_size*4/3, d2=hole_size, h=wall_thickness+epsilon,
-            left=(-hole_spacing*(round(holder_total_x/hole_spacing)/2) + i*hole_spacing) < 0);
-		}
+                    -board_thickness/2]
+                ) rotate([0,0,0*15])
+                    squished_cylinder(
+                        d1=hole_size*4/3,
+                        d2=hole_size,
+                        h=wall_thickness+epsilon,
+                        left=
+                    (-hole_spacing*(round(holder_total_x/hole_spacing)/2) + i*hole_spacing) < 0);
+            }
         }
 	}
 }
 
-module pinboard_column(left=false) {
+module pinboard_column(left=false, board_thickness=board_thickness) {
     difference() {
         intersection() {
         
@@ -195,11 +198,12 @@ module pinboard_column(left=false) {
                 translate([
                     -hole_size-board_thickness,
                     0-hole_size/2 + (left ? peg_tolerance : -hole_size*1/3-peg_tolerance),
-                    -board_thickness/2
+                    -wall_thickness-epsilon
                 ]) cube([
                     max(strength_factor, round(holder_height/hole_spacing))*hole_spacing+hole_size*2+board_thickness,
                     hole_size*4/3,
-                    board_thickness*3
+                    wall_thickness+board_thickness+hole_size
+                    // this is not right, needs to accomodate the 5?mm from rotate extrude
                 ]);
                 
             // the actual pin column
@@ -209,7 +213,7 @@ module pinboard_column(left=false) {
                         j*hole_spacing, 
                         0, 
                         board_thickness*0.25
-                    ]) pin(j==0);
+                    ]) pin(j==0, board_thickness);
                 }
                 
                 hull() {
@@ -217,7 +221,7 @@ module pinboard_column(left=false) {
                         translate([
                             j*hole_spacing, 
                             0, 
-                            -board_thickness/2
+                            -wall_thickness-epsilon
                         ])
                         rotate([0,0,0*15])
                         squished_cylinder(
@@ -236,7 +240,7 @@ module pinboard_column(left=false) {
         translate([
                 (left ? -hole_size-board_thickness : 0),
                 (left ? 1 : -1) * (peg_tolerance-hole_size/2),
-                -board_thickness/2
+                -wall_thickness
             ])
         rotate([(left ? 180+45 : -45),0,0])
         translate([
@@ -443,7 +447,7 @@ module pegstr() {
 				holder(2);
 			}
 
-			//color([1,0,0]) pinboard_clips();
+//			color([1,0,0]) pinboard_clips();
 		}
 	
 		holder(1);
@@ -451,29 +455,15 @@ module pegstr() {
 	}
 }
 
-//// center front gap
-//difference() {
-//    translate([0,0,-clip_height/2]) pegstr();
-//    hull() {
-//        translate([-20,0,-20]) cylinder(d=7, h=30);
-//        translate([-50,0,-20]) cylinder(d=7, h=30);
-//    }
+//translate([0,0,-clip_height/2-epsilon])
+//pegstr();
+
+//for (i = [0:1]) {
+//translate([hole_size/2+5+20*0,-clip_height+hole_size/2,-hole_size/2+peg_tolerance]) rotate([-90,0,0])
+pinboard_column(left=false);
+//translate([hole_size/2+5+20*i,-hole_size/2+clip_height,-hole_size/2+peg_tolerance]) rotate([90,0,0]) pinboard_column(left=true);
 //}
 
-// -(holder_height/2)*sin(holder_angle) - holder_height/2 + clip_height/2
-//translate([0,0,-clip_height/2-epsilon]) pegstr();
-//
-//translate([10,0,-hole_size])
-//pinboard_column(left=false);
-
-for (i = [0:1]) {
-translate([hole_size/2+5+20*i,-clip_height+hole_size/2,-hole_size/2+peg_tolerance]) rotate([-90,0,0]) pinboard_column(left=false);
-//translate([hole_size/2+5+20*i,-hole_size/2+clip_height,-hole_size/2+peg_tolerance]) rotate([90,0,0]) pinboard_column(left=true);
-}
-
-//translate([hole_size/2+5,clip_height-hole_size/2,-hole_size/2+peg_tolerance]) rotate([90,0,0]) pinboard_column(left=false);
-//translate([hole_size/2+25,clip_height-hole_size/2,-hole_size/2+peg_tolerance]) rotate([90,0,0]) pinboard_column(left=false);
-//translate([hole_size/2+5,hole_size/2-clip_height,-hole_size/2+peg_tolerance]) rotate([-90,0,0]) pinboard_column(left=true);
 
 // for cutouts. squished cylinder centered on d2 (the higher face)
 // with either the left or right edge straight and the other one
