@@ -29,6 +29,8 @@ translate([0,0,-1.5]) desk();
 
 
 module long_shelf(length=6*12, height=10) {
+    echo("Long shelf: ",length/12, "' x", 9, "\"");
+    echo("Long shelf: ",length, "\" length");
     birch() translate([0, 25-9, height]) cube([length, 9, 1.5]);
     translate([2.5, 25-9+1.25, height]) leg(height=height, width=9-2.5);
     translate([length-2.5-2, 25-9+1.25, height]) leg(height=height, width=9-2.5);
@@ -38,7 +40,8 @@ long_shelf(height=7.25);
 // 17.5 total height
 // 14.5 leg height
 // 7.25 each leg
-translate([16*0,0,7.25+1.5]) long_shelf(length=6*12-16, height=7.25);
+translate([16*0,0,7.25+1.5]) long_shelf(length=6*12-16, height=7.25); // old
+//translate([16*0,0,7.25+1.5]) long_shelf(length=46, height=7.25);
 
 module round_shelf(height=10) {
     birch() translate([6*12, -67, height]) intersection() {
@@ -46,8 +49,9 @@ module round_shelf(height=10) {
         translate([-16, 0, 0]) cube([16,16,2]);
     }
     gap= 1.25; // gap between wall and leg
-    translate([6*12-2-gap, -67+2+gap+gap, height]) leg(height=height, width=16-2-3*gap);
-    translate([6*12-2-gap-gap, -67+gap, height]) rotate([0,0,90]) leg(height=height, width=16-2-3*gap);
+    // width originally determined by 16-2-3*gap but bought 10"
+    translate([6*12-2-gap, -67+2+gap+gap, height]) leg(height=height, width=10);
+    translate([6*12-2-gap-gap, -67+gap, height]) rotate([0,0,90]) leg(height=height, width=10);
 }
 round_shelf(7.25);
 
@@ -86,3 +90,29 @@ module walls() {
      color("white", alpha=.5) translate([6*12-25-4,-67,-34.5-1.5]) cube([4,1/2,7*12]);
 }
 walls();
+
+module shelf_source() {
+    birch() cube([74, 25, 1.5]);
+    color("blue") translate([0,0,1.5]) cube([72, 9, 1.5]);
+    translate([0,9,1.5]) cube([56, 9, 1.5]); // original
+//    translate([0,9,1.5]) cube([46, 9, 1.8]); // shorter
+    
+    color("red") translate([74,9+16,1.6]) rotate([0,0,-270]) intersection() {
+        cylinder(h=1.5, r=16, $fn=100);
+        translate([-16, 0, 0]) cube([16,16,2]);
+    }
+    
+//    color("orange") translate([74-16-16+4.2,25-16,1.6]) rotate([0,0,-270]) intersection() {
+//        cylinder(h=1.5, r=16, $fn=100);
+//        translate([0, -16, 0]) cube([16,16,2]);
+//    }
+    
+    
+//    translate([74-16/2, 25-16/2, 1.5]) 
+//    intersection() {
+//        cylinder(h=1.5, d=16);
+//        translate([0, -8, -.05]) cube([8, 16, 1.6]);
+//    }
+
+}
+translate([-10,-20,10]) rotate([0,0,-90]) shelf_source();
